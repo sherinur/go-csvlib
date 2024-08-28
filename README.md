@@ -71,4 +71,4 @@ This function returns the nth field.
   }
   ```
 - Returns number of fields on last line read by ReadLine
-- Behaviors undefined if called before ReadLine
+- Behaviors undefined if called before ReadLine is called
