@@ -41,8 +41,34 @@ This function reads a new line from a CSV file.
   }
   ```
 
-  - Reads one line from open input file
-  - Returns pointer to line, with terminator removed, or nil if EOF occurred
-  - Calling ReadLine in a loop allows you to sequentially read each line from the file, continuing until the end of the file is reached.
-  - Assumes that input lines are terminated by \r, \n, \r\n, or EOF
-  - If the line has a missing or extra quote, it should return an empty string and an ErrQuote error.
+- Reads one line from open input file
+- Returns pointer to line, with terminator removed, or nil if EOF occurred
+- Calling ReadLine in a loop allows you to sequentially read each line from the file, continuing until the end of the file is reached.
+- Assumes that input lines are terminated by \r, \n, \r\n, or EOF
+- If the line has a missing or extra quote, it returns an empty string and an ErrQuote error.
+
+### GetField
+This function returns the nth field.
+  ```GO
+  type CSVParser interface  {
+      // ...
+      GetField(n int) (string, error)
+      // ...
+  }
+  ```
+- Returns n-th field from last line read by ReadLine;
+- Returns ErrFieldCount if n < 0 or beyond last field
+- Fields are separated by commas
+- Fields may be surrounded by "..."; such quotes are removed
+- There can be an arbitrary number of fields of any length
+
+### GetNumberOfFields
+  ```GO
+  type CSVParser interface  {
+      // ...
+      GetNumberOfFields() int
+      // ...
+  }
+  ```
+- Returns number of fields on last line read by ReadLine
+- BehaviorS undefined if called before ReadLine is called
