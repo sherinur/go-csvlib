@@ -10,8 +10,11 @@ Comma-separated values, or CSV, is a simple and widely used format for represent
 
 ## Resources
 [Go File I/O](https://golang.org/pkg/os/)
+
 [CSV Format](https://tools.ietf.org/html/rfc4180)
+
 [Go Interfaces](https://golang.org/doc/effective_go.html#interfaces)
+
 
 ## Mandatory Part
 I have built a CSV library in Go. Implemented following interface methods:
