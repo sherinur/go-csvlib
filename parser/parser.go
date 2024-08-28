@@ -30,7 +30,6 @@ var (
 func (parser *SimpleCSVParser) ReadLine(r io.Reader) (string, error) {
 	buffer := make([]byte, 1)
 	var line []byte
-	var lastByte byte
 	numOfQuotes := 0
 	inQuotes := false
 
@@ -39,18 +38,20 @@ func (parser *SimpleCSVParser) ReadLine(r io.Reader) (string, error) {
 		// reading not empty byte
 		if n > 0 {
 			b := buffer[0]
+
+			// handling empty line case
 			if len(line) == 0 && (b == '\n' || b == '\r') {
 				continue
 			}
 
-			line = append(line, b)
-
+			// toggle quotes state
 			if b == '"' {
 				inQuotes = !inQuotes
 			}
 
+			line = append(line, b)
+
 			if (b == '\n' || b == '\r') && !inQuotes {
-				lastByte = b
 				break
 			}
 		}
@@ -58,19 +59,16 @@ func (parser *SimpleCSVParser) ReadLine(r io.Reader) (string, error) {
 		// error handling
 		if err != nil {
 			if err == io.EOF {
-				if len(line) > 0 {
-					// process the last line if it exists
-					parser.lastLine = string(line)
-					parser.fields = extractFields(parser.lastLine)
-					parser.numFields = len(parser.fields)
-					parser.readLineCalled = true
-					return parser.lastLine, nil
-				}
-				// check for mismatched quotes
 				parser.lastLine = string(line)
 				parser.fields = extractFields(parser.lastLine)
 				parser.numFields = len(parser.fields)
 				parser.readLineCalled = true
+
+				// process the last line if it exists
+				if len(line) > 0 {
+					return parser.lastLine, nil
+				}
+				// check for mismatched quotes
 				return "", io.EOF
 			}
 			parser.lastLine = ""
@@ -81,16 +79,8 @@ func (parser *SimpleCSVParser) ReadLine(r io.Reader) (string, error) {
 
 	}
 
-	// remove newline from the end.
-	if lastByte == '\n' && len(line) > 0 && line[len(line)-1] == '\r' {
-		// \r\n
-		line = line[:len(line)-2]
-	} else if lastByte == 'n' || lastByte == 'r' {
-		// \r or \n
-		if len(line) > 0 {
-			line = line[:len(line)-1]
-		}
-	}
+	// remove the new line in the end
+	line = trimNewLine(line)
 
 	// check for mismatched quotes
 	if numOfQuotes%2 != 0 {
@@ -119,7 +109,7 @@ func (parser *SimpleCSVParser) GetField(n int) (string, error) {
 	if n < 0 || n >= len(parser.fields) {
 		return "", ErrFieldCount
 	}
-	return parser.fields[n], nil
+	return trimQuotes(parser.fields[n]), nil
 }
 
 // Returns number of fields on last line read by ReadLine
