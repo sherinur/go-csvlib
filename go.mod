@@ -1,3 +1,3 @@
-module a-library-for-others
+module github.com/sherinur/go-csvlib
 
 go 1.22.6
