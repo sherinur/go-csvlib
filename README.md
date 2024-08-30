@@ -2,10 +2,10 @@
 A simple library in GO, to manually process and parse CSV files.
 ## Usage
 Fetch the package:
-  ```go get github.com/sherinur/go-csvlib/parser```
+```$ go get github.com/sherinur/go-csvlib/parser```
   
 Install from the source:
-  ```git clone git@github.com:sherinur/go-csvlib.git```
+```$ git clone git@github.com:sherinur/go-csvlib.git```
   
 ## Context
 Comma-separated values, or CSV, is a simple and widely used format for representing tabular data. Each row in a CSV file corresponds to a line of text, with individual fields separated by commas. Here’s an example:
